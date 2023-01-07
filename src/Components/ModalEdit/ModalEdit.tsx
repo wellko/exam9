@@ -1,13 +1,16 @@
 import React, {useState} from 'react';
 import {useAppDispatch} from "../../app/hooks";
-import {CloseAddModal} from "../../store/FinanceSlice";
+import {CloseEditModal} from "../../store/FinanceSlice";
 import {categoryType} from "../../types";
+import {AddCategory, getCategories} from "../../store/FinanceThunks";
 
 const ModalEdit = () => {
 
+    const dispatch = useAppDispatch();
+
     const initialState: categoryType = {
         name: '',
-        type: '',
+        type: 'Income',
     }
 
     const [category, setCategory] = useState<categoryType>(initialState);
@@ -17,10 +20,15 @@ const ModalEdit = () => {
         setCategory(prev => ({...prev, [name]: value}));
     };
 
-    const dispatch = useAppDispatch();
-
     const onClose = () => {
-        dispatch(CloseAddModal());
+        dispatch(CloseEditModal());
+    };
+
+    const onSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        await dispatch(AddCategory(category));
+        await dispatch(CloseEditModal());
+        await dispatch(getCategories());
     }
 
     return (
@@ -34,19 +42,19 @@ const ModalEdit = () => {
                             <button type="button" className="btn btn-secondary ms-auto" onClick={onClose}>X</button>
                         </div>
                         <div className="modal-body">
-                            <form id='edit'>
+                            <form id='edit' onSubmit={onSubmit}>
                                 <label>Type</label>
-                                <select onChange={onChange}>
-                                    <option defaultChecked={true} value='Expense'>Expense</option>
+                                <select value={category.type} name='type' onChange={onChange}>
+                                    <option value='Expense'>Expense</option>
                                     <option value='Income'>Income</option>
                                 </select>
-
                                 <label>Category</label>
-                                <input  value={category.name} onChange={onChange} required={true}></input>
-
+                                <input name='name' value={category.name} onChange={onChange} required={true}></input>
                             </form>
                         </div>
                         <div className="modal-footer">
+                            <button type='submit' form='edit'>Add</button>
+                            <button type='button' onClick={onClose}> Close</button>
                         </div>
                     </div>
                 </div>

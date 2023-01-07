@@ -1,19 +1,42 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import ModalAdd from "../../Components/ModalAdd/ModalAdd";
-import {useAppSelector} from "../../app/hooks";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {FinanceSelect} from "../../store/FinanceSlice";
+import {getActions, getCategories} from "../../store/FinanceThunks";
+import Action from "../../Components/Action/Action";
+import Spinner from "../../Components/Spinner/Spinner";
+import Total from "../../Components/Total/Total";
 
 const HomePage = () => {
 
+    const dispatch = useAppDispatch();
+
+    const status = useAppSelector(FinanceSelect).status;
+
     const modal = useAppSelector(FinanceSelect).addModal;
+
+    const categories = useAppSelector(FinanceSelect).categories;
+
+    const actions = useAppSelector(FinanceSelect).actions;
+
+    useEffect(() => {
+        dispatch(getActions());
+        dispatch(getCategories());
+    }, [dispatch]);
 
     return (
         <>
-            {modal ? <ModalAdd/> : ''}
-        <div className='container'>
+            {modal? <ModalAdd categories={categories}/> : ''}
+            <div className='container'>
+                {status.getCategories? <Spinner/> : <Total item={actions}/>    }
+                {actions.length > 0 && categories.length > 0? (actions.map(item => {
+                    const data =  categories.filter(category => category.id === item.category);
+                    if (data.length > 0){
+                        return <Action id={item.id} key={Math.random()} amount={item.amount} item={data[0]} date={item.createdAt} />
+                    } return '';
+                }) ) : <h2>No Actions Yet</h2>}
 
-            
-        </div>
+            </div>
         </>
     );
 };
