@@ -1,19 +1,19 @@
 import React, {useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from "../app/hooks";
-import {FinanceSelect, OpenEditModal} from "../store/FinanceSlice";
-import ModalAdd from "../Components/ModalAdd/ModalAdd";
-import ModalEdit from "../Components/ModalEdit/ModalEdit";
+import {FinanceSelect, OpenAddModalCategory} from "../store/FinanceSlice";
+import ModalAction from "../Components/ModalAction/ModalAction";
 import CategoryList from "../Components/CategoryList/CategoryList";
 import {getCategories} from "../store/FinanceThunks";
 import Spinner from "../Components/Spinner/Spinner";
+import ModalCategory from "../Components/ModalCategory/ModalCategory";
 
 const CategoryPage = () => {
 
     const dispatch = useAppDispatch();
 
-    const modalAdd = useAppSelector(FinanceSelect).addModal;
+    const modalAddCategory = useAppSelector(FinanceSelect).addModalCategory;
 
-    const modalEdit = useAppSelector(FinanceSelect).editModal;
+    const modalAddAction = useAppSelector(FinanceSelect).addModalAction;
 
     const categories = useAppSelector(FinanceSelect).categories;
 
@@ -25,12 +25,12 @@ const CategoryPage = () => {
 
     return (
         <>
-            {modalAdd ? <ModalAdd categories={categories}/> : ''}
-            {modalEdit ? <ModalEdit/> : ''}
+            {modalAddAction ? <ModalAction categories={categories}/> : ''}
+            {modalAddCategory ? <ModalCategory/> : ''}
             <div className='container'>
                 <h1>Categories:</h1>
 
-                <button className='btn btn-dark' onClick={() => dispatch(OpenEditModal())}>Add</button>
+                <button className='btn btn-dark' onClick={() => dispatch(OpenAddModalCategory())}>Add</button>
 
                 {status.getCategories ? <Spinner/> : <CategoryList categories={categories}/>}
 

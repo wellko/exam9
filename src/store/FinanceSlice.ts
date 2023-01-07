@@ -6,8 +6,10 @@ import {categoryActionApi, categoryTypeApi} from "../types";
 interface State {
     categories: categoryTypeApi[];
     actions: categoryActionApi[];
-    addModal: boolean;
-    editModal: boolean;
+    addModalAction: boolean;
+    editModalAction: boolean;
+    addModalCategory: boolean;
+    editModalCategory: boolean;
     status: {
         getCategories: boolean;
         getActions:boolean;
@@ -18,8 +20,10 @@ interface State {
 const initialState: State = {
     categories: [],
     actions: [],
-    addModal: false,
-    editModal: false,
+    addModalAction: false,
+    editModalAction: false,
+    addModalCategory:false,
+    editModalCategory:false,
     status: {
         deleteCategory:false,
         getCategories: true,
@@ -31,17 +35,29 @@ const FinanceSlice = createSlice({
         name: 'finance',
         initialState,
         reducers: {
-            OpenAddModal: state => {
-                state.addModal = true;
+            OpenAddModalAction: state => {
+                state.addModalAction = true;
             },
-            CloseAddModal: state => {
-                state.addModal = false;
+            CloseAddModalAction: state => {
+                state.addModalAction = false;
             },
-            OpenEditModal: state => {
-                state.editModal = true;
+            OpenAddModalCategory: state => {
+                state.addModalCategory = true;
             },
-            CloseEditModal: state => {
-                state.editModal = false;
+            CloseAddModalCategory: state => {
+                state.addModalCategory = false;
+            },
+            OpenEditModalAction: state => {
+                state.editModalAction = true;
+            },
+            CloseEditModalAction: state => {
+                state.editModalAction = false;
+            },
+            OpenEditModalCategory: state => {
+                state.editModalCategory = true;
+            },
+            CloseEditModalCategory: state => {
+                state.editModalCategory = false;
             }
         },
         extraReducers: (builder) => {
@@ -82,4 +98,4 @@ const FinanceSlice = createSlice({
 
 export const FinanceReducer = FinanceSlice.reducer;
 export const FinanceSelect = (state: RootState) => state.finance;
-export const {OpenAddModal, CloseAddModal, OpenEditModal, CloseEditModal} = FinanceSlice.actions;
+export const {OpenAddModalAction, CloseAddModalAction, OpenEditModalAction, CloseEditModalAction, CloseEditModalCategory, OpenAddModalCategory, OpenEditModalCategory, CloseAddModalCategory} = FinanceSlice.actions;

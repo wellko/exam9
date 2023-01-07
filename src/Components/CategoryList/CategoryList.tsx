@@ -2,7 +2,7 @@ import React from 'react';
 import {categoryTypeApi} from "../../types";
 import {useAppDispatch} from "../../app/hooks";
 import {deleteCategory, getCategories} from "../../store/FinanceThunks";
-import {OpenEditModal} from "../../store/FinanceSlice";
+import {OpenEditModalCategory} from "../../store/FinanceSlice";
 
 interface Props {
     categories: categoryTypeApi[]
@@ -22,7 +22,7 @@ const CategoryList: React.FC<Props> = ({categories}) => {
                         <p style={item.type === 'Income'? {color: 'green'} : {color : 'red'}}>{item.type}</p>
                     </div>
                         <div >
-                            <button className='btn btn-dark ms-2' onClick={() => dispatch(OpenEditModal()) }>Edit</button>
+                            <button className='btn btn-dark ms-2' onClick={() => dispatch(OpenEditModalCategory()) }>Edit</button>
                             <button className='btn btn-dark ms-2' onClick={ async () => {
                                await dispatch(deleteCategory(item.id))
                                await dispatch(getCategories());

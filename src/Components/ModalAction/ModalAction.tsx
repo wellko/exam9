@@ -1,19 +1,24 @@
 import React, {useState} from 'react';
 import {useAppDispatch} from "../../app/hooks";
-import {CloseAddModal} from "../../store/FinanceSlice";
 import {categoryAction, categoryTypeAdd, categoryTypeApi} from "../../types";
 import {addFinanceAction, getActions} from "../../store/FinanceThunks";
+import {CloseAddModalAction, CloseEditModalAction} from "../../store/FinanceSlice";
 
 interface Props {
-    categories: categoryTypeApi[]
+    categories: categoryTypeApi[];
+    editing? : categoryTypeAdd;
 }
 
-const ModalAdd: React.FC<Props> = ({categories}) => {
+const ModalAction: React.FC<Props> = ({categories, editing}) => {
 
-    const initialState: categoryTypeAdd = {
+    let initialState: categoryTypeAdd = {
         name: '',
         type: 'Expense',
         amount: '',
+    }
+
+    if (editing) {
+        initialState = editing
     }
 
     const [sendData, setSendData] = useState<categoryTypeAdd>(initialState);
@@ -24,8 +29,13 @@ const ModalAdd: React.FC<Props> = ({categories}) => {
         const {name, value} = e.target;
         setSendData(prev => ({...prev, [name]: value}));
     };
+
     const onClose = () => {
-        dispatch(CloseAddModal());
+        if (editing) {
+            dispatch(CloseEditModalAction());
+        }else {
+            dispatch(CloseAddModalAction());
+        }
     };
 
     const onSubmit = async (e: React.FormEvent) => {
@@ -38,7 +48,6 @@ const ModalAdd: React.FC<Props> = ({categories}) => {
             createdAt: createdAt,
         };
         await dispatch(addFinanceAction(SendingItem));
-        await dispatch(CloseAddModal());
         await dispatch(getActions());
     }
 
@@ -85,4 +94,4 @@ const ModalAdd: React.FC<Props> = ({categories}) => {
     );
 };
 
-export default ModalAdd;
+export default ModalAction;

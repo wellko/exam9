@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import ModalAdd from "../../Components/ModalAdd/ModalAdd";
+import ModalAction from "../../Components/ModalAction/ModalAction";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {FinanceSelect} from "../../store/FinanceSlice";
 import {getActions, getCategories} from "../../store/FinanceThunks";
@@ -13,7 +13,7 @@ const HomePage = () => {
 
     const status = useAppSelector(FinanceSelect).status;
 
-    const modal = useAppSelector(FinanceSelect).addModal;
+    const modal = useAppSelector(FinanceSelect);
 
     const categories = useAppSelector(FinanceSelect).categories;
 
@@ -26,7 +26,7 @@ const HomePage = () => {
 
     return (
         <>
-            {modal? <ModalAdd categories={categories}/> : ''}
+            {modal.addModalAction? <ModalAction categories={categories}/> : ''}
             <div className='container'>
                 {status.getCategories? <Spinner/> : <Total item={actions}/>    }
                 {actions.length > 0 && categories.length > 0? (actions.map(item => {

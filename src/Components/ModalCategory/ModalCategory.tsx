@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
 import {useAppDispatch} from "../../app/hooks";
-import {CloseEditModal} from "../../store/FinanceSlice";
 import {categoryType} from "../../types";
 import {AddCategory, getCategories} from "../../store/FinanceThunks";
+import {CloseAddModalCategory, CloseEditModalCategory} from "../../store/FinanceSlice";
 
-const ModalEdit = () => {
+const ModalCategory = () => {
 
     const dispatch = useAppDispatch();
 
@@ -21,13 +21,14 @@ const ModalEdit = () => {
     };
 
     const onClose = () => {
-        dispatch(CloseEditModal());
+        dispatch(CloseAddModalCategory());
+        dispatch(CloseEditModalCategory());
     };
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         await dispatch(AddCategory(category));
-        await dispatch(CloseEditModal());
+        // await dispatch(CloseEditModal());
         await dispatch(getCategories());
     }
 
@@ -63,4 +64,4 @@ const ModalEdit = () => {
     );
 };
 
-export default ModalEdit;
+export default ModalCategory;

@@ -1,14 +1,14 @@
 import React from 'react';
 import {Link, useNavigate} from "react-router-dom";
 import {useAppDispatch} from "../../app/hooks";
-import {OpenAddModal} from "../../store/FinanceSlice";
+import {OpenAddModalAction} from "../../store/FinanceSlice";
 
 const Navbar = () => {
 
     const dispatch = useAppDispatch();
 
     const onModal = () => {
-        dispatch(OpenAddModal());
+        dispatch(OpenAddModalAction());
     }
 
     const navigate = useNavigate();
