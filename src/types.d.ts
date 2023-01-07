@@ -15,6 +15,7 @@ export interface categoryActionApi extends categoryAction {
 
 export interface categoryTypeAdd extends categoryType{
     amount: string;
+    id? : string;
 }
 
 export interface categoryTypeApi extends categoryType{

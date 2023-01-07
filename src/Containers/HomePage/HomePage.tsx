@@ -19,6 +19,8 @@ const HomePage = () => {
 
     const actions = useAppSelector(FinanceSelect).actions;
 
+    const editing = useAppSelector(FinanceSelect).editingAction;
+
     useEffect(() => {
         dispatch(getActions());
         dispatch(getCategories());
@@ -26,16 +28,19 @@ const HomePage = () => {
 
     return (
         <>
-            {modal.addModalAction? <ModalAction categories={categories}/> : ''}
+            {modal.addModalAction ? <ModalAction categories={categories}/> : ''}
+            {modal.editModalAction ? <ModalAction categories={categories} editing={editing}/> : ''}
             <div className='container'>
-                {status.getCategories? <Spinner/> : <Total item={actions}/>    }
-                {actions.length > 0 && categories.length > 0? (actions.map(item => {
-                    const data =  categories.filter(category => category.id === item.category);
-                    if (data.length > 0){
-                        return <Action id={item.id} key={Math.random()} amount={item.amount} item={data[0]} date={item.createdAt} />
-                    } return '';
-                }) ) : <h2>No Actions Yet</h2>}
-
+                {status.getCategories ? <Spinner/> : <Total item={actions}/>}
+                {status.getCategories ?
+                    <Spinner/> : actions.length > 0 ? (actions.map(item => {
+                        const data = categories.filter(category => category.id === item.category);
+                        if (data.length > 0) {
+                            return <Action id={item.id} key={Math.random()} amount={item.amount} item={data[0]}
+                                           date={item.createdAt}/>
+                        }
+                        return '';
+                    })) : <h2>No Actions Yet</h2>}
             </div>
         </>
     );

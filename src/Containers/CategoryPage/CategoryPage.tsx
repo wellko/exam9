@@ -1,11 +1,11 @@
 import React, {useEffect} from 'react';
-import {useAppDispatch, useAppSelector} from "../app/hooks";
-import {FinanceSelect, OpenAddModalCategory} from "../store/FinanceSlice";
-import ModalAction from "../Components/ModalAction/ModalAction";
-import CategoryList from "../Components/CategoryList/CategoryList";
-import {getCategories} from "../store/FinanceThunks";
-import Spinner from "../Components/Spinner/Spinner";
-import ModalCategory from "../Components/ModalCategory/ModalCategory";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import {FinanceSelect, OpenAddModalCategory} from "../../store/FinanceSlice";
+import ModalAction from "../../Components/ModalAction/ModalAction";
+import CategoryList from "../../Components/CategoryList/CategoryList";
+import {getCategories} from "../../store/FinanceThunks";
+import Spinner from "../../Components/Spinner/Spinner";
+import ModalCategory from "../../Components/ModalCategory/ModalCategory";
 
 const CategoryPage = () => {
 
@@ -15,9 +15,13 @@ const CategoryPage = () => {
 
     const modalAddAction = useAppSelector(FinanceSelect).addModalAction;
 
+    const modalEditCategory = useAppSelector(FinanceSelect).editModalCategory;
+
     const categories = useAppSelector(FinanceSelect).categories;
 
     const status = useAppSelector(FinanceSelect).status;
+
+    const editing = useAppSelector(FinanceSelect).editingCategory;
 
     useEffect(() => {
         dispatch(getCategories())
@@ -27,13 +31,11 @@ const CategoryPage = () => {
         <>
             {modalAddAction ? <ModalAction categories={categories}/> : ''}
             {modalAddCategory ? <ModalCategory/> : ''}
+            {modalEditCategory ? <ModalCategory item={editing}/> : ''}
             <div className='container'>
                 <h1>Categories:</h1>
-
                 <button className='btn btn-dark' onClick={() => dispatch(OpenAddModalCategory())}>Add</button>
-
                 {status.getCategories ? <Spinner/> : <CategoryList categories={categories}/>}
-
             </div>
         </>
     );

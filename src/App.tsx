@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from "./Components/Navbar/Navbar";
 import {Route, Routes} from "react-router-dom";
 import HomePage from "./Containers/HomePage/HomePage";
-import CategoryPage from "./Containers/CategoryPage";
+import CategoryPage from "./Containers/CategoryPage/CategoryPage";
 
 function App() {
   return (

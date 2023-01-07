@@ -1,15 +1,18 @@
 import React, {useState} from 'react';
-import {useAppDispatch} from "../../app/hooks";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {categoryAction, categoryTypeAdd, categoryTypeApi} from "../../types";
-import {addFinanceAction, getActions} from "../../store/FinanceThunks";
-import {CloseAddModalAction, CloseEditModalAction} from "../../store/FinanceSlice";
+import {addFinanceAction, EditAction, getActions} from "../../store/FinanceThunks";
+import {CloseAddModalAction, CloseEditModalAction, FinanceSelect} from "../../store/FinanceSlice";
+import ButtonSpinner from "../Spinner/ButtonSpinner";
 
 interface Props {
     categories: categoryTypeApi[];
-    editing? : categoryTypeAdd;
+    editing?: categoryTypeAdd;
 }
 
 const ModalAction: React.FC<Props> = ({categories, editing}) => {
+
+    const state = useAppSelector(FinanceSelect).status.editing;
 
     let initialState: categoryTypeAdd = {
         name: '',
@@ -33,7 +36,7 @@ const ModalAction: React.FC<Props> = ({categories, editing}) => {
     const onClose = () => {
         if (editing) {
             dispatch(CloseEditModalAction());
-        }else {
+        } else {
             dispatch(CloseAddModalAction());
         }
     };
@@ -47,8 +50,18 @@ const ModalAction: React.FC<Props> = ({categories, editing}) => {
             category: sendData.name,
             createdAt: createdAt,
         };
-        await dispatch(addFinanceAction(SendingItem));
+        if (editing) {
+            await dispatch(EditAction({
+                item: SendingItem,
+                id: editing.id!,
+            }))
+            dispatch(CloseEditModalAction());
+        } else {
+            await dispatch(addFinanceAction(SendingItem));
+            dispatch(CloseAddModalAction());
+        }
         await dispatch(getActions());
+
     }
 
     const options = categories.filter(item => item.type === sendData.type)
@@ -60,7 +73,7 @@ const ModalAction: React.FC<Props> = ({categories, editing}) => {
                 <div className="modal-dialog modal-dialog-centered" role="document">
                     <div className="modal-content">
                         <div className="modal-header d-flex ">
-                            <h5 className="modal-title">Add category</h5>
+                            <h5 className="modal-title">{editing ? 'Edit category' : "Add category"}</h5>
                             <button type="button" className="btn btn-secondary ms-auto" onClick={onClose}>X</button>
                         </div>
                         <div className="modal-body">
@@ -72,8 +85,10 @@ const ModalAction: React.FC<Props> = ({categories, editing}) => {
                                         <option value='Income'>Income</option>
                                     </select>
                                     <label>Category</label>
-                                    <select onChange={onChange} name='name' required={true} value={sendData.name}>
-                                        <option value=''>Enter any category</option>
+                                    <select onChange={onChange} name='name' required={true} defaultValue={sendData.name}
+                                            value={sendData.name}>
+                                        <option
+                                            value=''>{editing ? 'Click if you want change' : 'Enter any category'}</option>
                                         {options.map(item => <option key={Math.random()}
                                                                      value={item.id}>{item.name}</option>)}
                                     </select>
@@ -84,7 +99,8 @@ const ModalAction: React.FC<Props> = ({categories, editing}) => {
                             </form>
                         </div>
                         <div className="modal-footer">
-                            <button type='submit' form='add'>Add</button>
+                            <button type='submit' form='add'> {state ?
+                                <ButtonSpinner/> : editing ? 'Edit' : 'Add'} </button>
                             <button type='button' onClick={onClose}> Close</button>
                         </div>
                     </div>

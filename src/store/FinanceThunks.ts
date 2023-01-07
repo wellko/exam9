@@ -12,7 +12,7 @@ export const AddCategory = createAsyncThunk<void, categoryType>(
 export const getCategories = createAsyncThunk<categoryTypeApi[]>(
     'finance/get',
     async () => {
-        const response =  await axiosApi.get('finance/categories.json');
+        const response = await axiosApi.get('finance/categories.json');
         return Object.keys(response.data).map(key => {
             return {...response.data[key], id: key}
         })
@@ -22,7 +22,7 @@ export const getCategories = createAsyncThunk<categoryTypeApi[]>(
 export const getActions = createAsyncThunk<categoryActionApi[]>(
     'finance/getAction',
     async () => {
-        const response =  await axiosApi.get('finance/actions.json');
+        const response = await axiosApi.get('finance/actions.json');
         return Object.keys(response.data).map(key => {
             return {...response.data[key], id: key}
         })
@@ -47,5 +47,29 @@ export const deleteAction = createAsyncThunk<void, string>(
     'finance/deleteAction',
     async (arg) => {
         await axiosApi.delete('finance/actions/' + arg + '.json');
+    }
+)
+
+interface categoryProps {
+    id: string;
+    item: categoryType;
+}
+
+export const EditCategory = createAsyncThunk<void, categoryProps>(
+    'finance/EditCategory',
+    async (arg) => {
+        await axiosApi.put('finance/categories/' + arg.id + '.json', arg.item);
+    }
+)
+
+interface ActionProps {
+    id: string;
+    item: categoryAction;
+}
+
+export const EditAction = createAsyncThunk<void, ActionProps>(
+    'finance/EditAction',
+    async (arg) => {
+        await axiosApi.put('finance/actions/' + arg.id + '.json', arg.item);
     }
 )

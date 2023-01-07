@@ -1,16 +1,30 @@
 import React, {useState} from 'react';
-import {useAppDispatch} from "../../app/hooks";
-import {categoryType} from "../../types";
-import {AddCategory, getCategories} from "../../store/FinanceThunks";
-import {CloseAddModalCategory, CloseEditModalCategory} from "../../store/FinanceSlice";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import {categoryType, categoryTypeApi} from "../../types";
+import {AddCategory, EditCategory, getCategories} from "../../store/FinanceThunks";
+import {CloseAddModalCategory, CloseEditModalCategory, FinanceSelect} from "../../store/FinanceSlice";
+import ButtonSpinner from "../Spinner/ButtonSpinner";
 
-const ModalCategory = () => {
+interface Props {
+    item?: categoryTypeApi;
+}
+
+const ModalCategory: React.FC<Props> = ({item}) => {
 
     const dispatch = useAppDispatch();
 
-    const initialState: categoryType = {
+    const state = useAppSelector(FinanceSelect).status.editing;
+
+    let initialState: categoryType = {
         name: '',
         type: 'Income',
+    }
+
+    if (item) {
+        initialState = {
+            name: item.name,
+            type: item.type
+        }
     }
 
     const [category, setCategory] = useState<categoryType>(initialState);
@@ -21,14 +35,25 @@ const ModalCategory = () => {
     };
 
     const onClose = () => {
-        dispatch(CloseAddModalCategory());
-        dispatch(CloseEditModalCategory());
+        if (item) {
+            dispatch(CloseEditModalCategory());
+        } else {
+            dispatch(CloseAddModalCategory());
+        }
+
+
     };
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        await dispatch(AddCategory(category));
-        // await dispatch(CloseEditModal());
+        if (!item) {
+            await dispatch(AddCategory(category));
+            await dispatch(CloseAddModalCategory());
+        } else {
+            await dispatch(EditCategory({id: item.id, item: category}));
+            await dispatch(CloseEditModalCategory());
+        }
+
         await dispatch(getCategories());
     }
 
@@ -39,23 +64,27 @@ const ModalCategory = () => {
                 <div className="modal-dialog modal-dialog-centered" role="document">
                     <div className="modal-content">
                         <div className="modal-header d-flex ">
-                            <h5 className="modal-title">Add category</h5>
+                            <h5 className="modal-title">{item ? 'Edit Category' : 'Add Category'}</h5>
                             <button type="button" className="btn btn-secondary ms-auto" onClick={onClose}>X</button>
                         </div>
                         <div className="modal-body">
                             <form id='edit' onSubmit={onSubmit}>
-                                <label>Type</label>
-                                <select value={category.type} name='type' onChange={onChange}>
-                                    <option value='Expense'>Expense</option>
-                                    <option value='Income'>Income</option>
-                                </select>
-                                <label>Category</label>
-                                <input name='name' value={category.name} onChange={onChange} required={true}></input>
+                                <div className='row'>
+                                    <label>Type</label>
+                                    <select value={category.type} name='type' onChange={onChange}>
+                                        <option value='Expense'>Expense</option>
+                                        <option value='Income'>Income</option>
+                                    </select>
+                                    <label>Category</label>
+                                    <input name='name' value={category.name} onChange={onChange}
+                                           required={true}></input>
+                                </div>
                             </form>
                         </div>
                         <div className="modal-footer">
-                            <button type='submit' form='edit'>Add</button>
-                            <button type='button' onClick={onClose}> Close</button>
+                            <button className='btn btn-dark' type='submit' form='edit'>{state ?
+                                <ButtonSpinner/> : item ? 'Edit' : 'Add'}</button>
+                            <button className='btn btn-dark' type='button' onClick={onClose}> Close</button>
                         </div>
                     </div>
                 </div>
